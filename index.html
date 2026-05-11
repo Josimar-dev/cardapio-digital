@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardápio Digital</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="header-logo">🍽️ Cardápio</div>
+            <div class="header-search">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar no cardápio..." autocomplete="off">
+            </div>
+            <div class="header-actions">
+                <button class="header-btn" onclick="Cart.openDrawer()">
+                    🛒 <span>Carrinho</span>
+                    <span class="badge" id="cartBadge">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Categories -->
+    <div class="categories">
+        <div class="container">
+            <div class="categories-inner" id="categoryTabs"></div>
+        </div>
+    </div>
+
+    <!-- Products -->
+    <section class="products-section">
+        <div class="container">
+            <div class="products-grid" id="productsGrid"></div>
+            <div class="products-empty" id="productsEmpty" style="display:none;">
+                <div class="empty-icon">🔍</div>
+                <p>Nenhum produto encontrado</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Overlay -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+
+    <!-- Cart Drawer -->
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="cart-header">
+            <h2>🛒 Seu Pedido</h2>
+            <button class="cart-close" id="cartClose">✕</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <div class="cart-empty" id="cartEmpty">
+                <div class="empty-icon">🛒</div>
+                <p>Carrinho vazio</p>
+                <p style="font-size:0.85rem;margin-top:4px;">Adicione itens do cardápio</p>
+            </div>
+        </div>
+        <div class="cart-footer" id="cartFooter" style="display:none;">
+            <div class="cart-total-row">
+                <span class="cart-total-label">Total</span>
+                <span class="cart-total-value" id="cartTotal">R$ 0,00</span>
+            </div>
+            <button class="btn-whatsapp" id="sendWhatsApp" data-phone="5511999999999">
+                💬 Finalizar Pedido via WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="js/data.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/client.js"></script>
+</body>
+</html>

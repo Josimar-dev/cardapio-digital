@@ -1,0 +1,9 @@
+{
+    "name": "cardapio-digital",
+    "version": "1.0.0",
+    "description": "Cardápio Digital com Node.js + SQLite",
+    "scripts": {
+        "start": "node backend/server.js",
+        "dev": "node --watch backend/server.js"
+    }
+}
