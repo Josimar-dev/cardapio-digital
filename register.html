@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Cardápio Digital</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div id="registerPage" class="login-page">
+        <div class="login-box">
+            <h1>🍽️ Cardápio</h1>
+            <p class="subtitle">Criar Conta</p>
+
+            <form id="registerForm">
+                <div id="registerError" class="login-error"></div>
+                <div class="form-group">
+                    <label for="registerNome">Nome Completo</label>
+                    <input type="text" id="registerNome" placeholder="Digite seu nome completo" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerWhatsapp">WhatsApp</label>
+                    <input type="tel" id="registerWhatsapp" placeholder="(11) 99999-8888" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">E-mail</label>
+                    <input type="email" id="registerEmail" placeholder="seu@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPass">Senha</label>
+                    <input type="password" id="registerPass" placeholder="Crie uma senha (mín. 4 caracteres)" required autocomplete="new-password">
+                </div>
+                <div class="form-group">
+                    <label for="registerConfirmPass">Confirmar Senha</label>
+                    <input type="password" id="registerConfirmPass" placeholder="Confirme a senha" required autocomplete="new-password">
+                </div>
+                <button type="submit" class="btn-primary">Cadastrar</button>
+                <div style="text-align:center;margin-top:16px;">
+                    <a href="admin.html" class="forgot-link" style="color:var(--text-muted);font-size:0.85rem;font-weight:500;">Já tenho conta →</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/register.js"></script>
+</body>
+</html>

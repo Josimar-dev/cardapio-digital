@@ -36,24 +36,7 @@ async function initDatabase() {
     db.run(`CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL,
-        nome_completo TEXT DEFAULT '',
-        whatsapp TEXT DEFAULT '',
-        email TEXT DEFAULT '',
-        created_at TEXT DEFAULT (datetime('now'))
-    )`);
-
-    try { db.run('ALTER TABLE users ADD COLUMN nome_completo TEXT DEFAULT \'\''); } catch (e) {}
-    try { db.run('ALTER TABLE users ADD COLUMN whatsapp TEXT DEFAULT \'\''); } catch (e) {}
-    try { db.run('ALTER TABLE users ADD COLUMN email TEXT DEFAULT \'\''); } catch (e) {}
-    try { db.run('ALTER TABLE users ADD COLUMN created_at TEXT DEFAULT \'\''); } catch (e) {}
-
-    db.run(`CREATE TABLE IF NOT EXISTS reset_tokens (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT NOT NULL,
-        token TEXT NOT NULL,
-        expires_at TEXT NOT NULL,
-        used INTEGER DEFAULT 0
+        password TEXT NOT NULL
     )`);
 
     const userCount = db.exec('SELECT COUNT(*) as count FROM users');

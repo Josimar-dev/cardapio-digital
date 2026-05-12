@@ -41,5 +41,38 @@ const Auth = {
         if (this.isAuthenticated()) {
             window.location.href = 'admin.html?panel=dashboard';
         }
+    },
+
+    async forgotPassword(username) {
+        const res = await fetch('/api/forgot-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        return data;
+    },
+
+    async register(nomeCompleto, password, whatsapp, email) {
+        const res = await fetch('/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: nomeCompleto, password, nomeCompleto, whatsapp, email })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        return data;
+    },
+
+    async resetPassword(username, token, newPassword) {
+        const res = await fetch('/api/reset-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, token, newPassword })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        return data;
     }
 };

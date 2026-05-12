@@ -783,6 +783,20 @@ ul { list-style: none; }
 
 .login-error.show { display: block; }
 
+.register-success {
+    background: rgba(46, 204, 113, 0.15);
+    color: var(--accent-green);
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    margin-bottom: 16px;
+    display: none;
+}
+
+.register-success.show { display: block; }
+
+.forgot-link:hover { text-decoration: underline; }
+
 /* ===== ADMIN LAYOUT ===== */
 .admin-page {
     min-height: 100vh;

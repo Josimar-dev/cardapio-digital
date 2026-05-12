@@ -7,6 +7,13 @@ const Client = {
     async init() {
         this.products = await AppData.getProducts();
         this.categories = await AppData.getCategories();
+
+        const params = new URLSearchParams(window.location.search);
+        const requestedCategory = (params.get('category') || window.location.hash.slice(1) || '').toLowerCase();
+        if (requestedCategory === 'todos' || this.categories.includes(requestedCategory)) {
+            this.activeCategory = requestedCategory || 'todos';
+        }
+
         Cart.init();
         this.renderCategories();
         this.renderProducts();
@@ -43,9 +50,19 @@ const Client = {
         const container = document.getElementById('categoryTabs');
         if (!container) return;
 
+        const order = ['bebidas', 'lanches', 'pizzas', 'sobremesas'];
+        const sortedCategories = [...new Set(this.categories)].sort((a, b) => {
+            const indexA = order.indexOf(a);
+            const indexB = order.indexOf(b);
+            if (indexA !== -1 || indexB !== -1) {
+                return (indexA === -1 ? order.length : indexA) - (indexB === -1 ? order.length : indexB);
+            }
+            return a.localeCompare(b, 'pt-BR');
+        });
+
         let html = `<button class="category-tab ${this.activeCategory === 'todos' ? 'active' : ''}" onclick="Client.filterByCategory('todos')">Todos</button>`;
 
-        this.categories.forEach(cat => {
+        sortedCategories.forEach(cat => {
             const label = cat.charAt(0).toUpperCase() + cat.slice(1);
             html += `<button class="category-tab ${this.activeCategory === cat ? 'active' : ''}" onclick="Client.filterByCategory('${cat}')">${label}</button>`;
         });

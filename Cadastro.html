@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Cardápio Digital</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .cadastro-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: var(--bg-page);
+        }
+        .cadastro-box {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: 40px 32px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        .cadastro-box h1 {
+            text-align: center;
+            font-size: 1.75rem;
+            margin-bottom: 4px;
+        }
+        .cadastro-box .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 28px;
+            font-size: 0.95rem;
+        }
+        .cadastro-success {
+            background: #10b981;
+            color: #fff;
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            text-align: center;
+            margin-bottom: 16px;
+            display: none;
+        }
+        .cadastro-success.show { display: block; }
+        .admin-link-bar {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        .admin-link-bar a {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-decoration: none;
+        }
+        .admin-link-bar a:hover { color: var(--accent); }
+    </style>
+</head>
+<body>
+
+    <div id="cadastroPage" class="cadastro-page">
+        <div class="cadastro-box">
+            <h1>🍽️ Cardápio</h1>
+            <p class="subtitle">Faça seu cadastro</p>
+
+            <div id="cadastroSuccess" class="cadastro-success"></div>
+            <div id="cadastroError" class="login-error"></div>
+
+            <form id="cadastroForm">
+                <div class="form-group">
+                    <label for="cadastroNome">Nome Completo</label>
+                    <input type="text" id="cadastroNome" placeholder="Digite seu nome completo" required>
+                </div>
+                <div class="form-group">
+                    <label for="cadastroWhatsapp">WhatsApp</label>
+                    <input type="tel" id="cadastroWhatsapp" placeholder="(11) 99999-8888" required>
+                </div>
+                <div class="form-group">
+                    <label for="cadastroEmail">E-mail</label>
+                    <input type="email" id="cadastroEmail" placeholder="seu@email.com" required>
+                </div>
+                <button type="submit" class="btn-primary" style="width:100%;">Cadastrar</button>
+            </form>
+
+            <div class="admin-link-bar">
+                <a href="#" id="showAdminLink">🔒 Administrador</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="loginPage" class="login-page" style="display:none;">
+        <div class="login-box">
+            <h1>🔒</h1>
+            <p class="subtitle">Autenticação necessária</p>
+            <form id="loginForm">
+                <div id="loginError" class="login-error"></div>
+                <div class="form-group">
+                    <label for="loginUser">Usuário</label>
+                    <input type="text" id="loginUser" placeholder="Digite seu usuário" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPass">Senha</label>
+                    <input type="password" id="loginPass" placeholder="Digite sua senha" required>
+                </div>
+                <button type="submit" class="btn-primary">Entrar</button>
+                <div style="text-align:center;margin-top:12px;">
+                    <a href="#" id="backToCadastro" style="color:var(--text-muted);font-size:0.85rem;">← Voltar ao cadastro</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="cadastroPanel" class="admin-page" style="display:none;">
+        <div class="admin-mobile-header">
+            <h2>📋 Cadastros</h2>
+        </div>
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="admin-sidebar-logo">🍽️ Cardápio</div>
+            <nav class="admin-sidebar-nav">
+                <a href="admin.html?panel=dashboard">📊 Admin</a>
+            </nav>
+            <div class="admin-sidebar-footer">
+                <a href="#" id="logoutBtn">🚪 Sair</a>
+            </div>
+        </aside>
+        <main class="admin-main">
+            <div class="admin-header">
+                <h1>📋 Cadastros</h1>
+                <button class="btn-primary" style="width:auto;padding:10px 24px;" onclick="exportarExcel()">📥 Exportar XLSX</button>
+            </div>
+            <div style="background:var(--bg-card);border-radius:var(--radius-lg);border:1px solid var(--border-color);overflow:hidden;">
+                <div style="overflow-x:auto;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>WhatsApp</th>
+                                <th>E-mail</th>
+                                <th>Data do Cadastro</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cadastrosBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const SESSION_KEY = 'cardapio_admin_session';
+        const TOKEN_KEY = 'cardapio_admin_token';
+
+        function getAuthHeaders() {
+            const token = sessionStorage.getItem(TOKEN_KEY);
+            if (!token) return {};
+            return { 'Authorization': 'Basic ' + token };
+        }
+
+        function isAuth() {
+            return sessionStorage.getItem(SESSION_KEY) === 'true';
+        }
+
+        document.getElementById('cadastroForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nome = document.getElementById('cadastroNome').value.trim();
+            const whatsapp = document.getElementById('cadastroWhatsapp').value.trim();
+            const email = document.getElementById('cadastroEmail').value.trim();
+            const errorEl = document.getElementById('cadastroError');
+            const successEl = document.getElementById('cadastroSuccess');
+
+            errorEl.textContent = '';
+            errorEl.classList.remove('show');
+            successEl.classList.remove('show');
+
+            if (!nome || !whatsapp || !email) {
+                errorEl.textContent = 'Preencha todos os campos.';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            try {
+                const submitBtn = e.target.querySelector('button');
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Cadastrando...';
+
+                const res = await fetch('/api/cadastros', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nome, whatsapp, email })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error);
+
+                successEl.textContent = 'Cadastro realizado com sucesso!';
+                successEl.classList.add('show');
+                document.getElementById('cadastroForm').reset();
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Cadastrar';
+            } catch (err) {
+                errorEl.textContent = err.message;
+                errorEl.classList.add('show');
+                const submitBtn = e.target.querySelector('button');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Cadastrar';
+            }
+        });
+
+        document.getElementById('showAdminLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('cadastroPage').style.display = 'none';
+            document.getElementById('loginPage').style.display = '';
+        });
+
+        document.getElementById('backToCadastro').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('cadastroPage').style.display = '';
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('loginUser').value.trim();
+            const password = document.getElementById('loginPass').value.trim();
+            const errorEl = document.getElementById('loginError');
+            errorEl.textContent = '';
+            errorEl.classList.remove('show');
+
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            const data = await res.json();
+            if (res.ok && data.token) {
+                sessionStorage.setItem(SESSION_KEY, 'true');
+                sessionStorage.setItem(TOKEN_KEY, data.token);
+                carregarDados();
+            } else {
+                errorEl.textContent = 'Usuário ou senha inválidos!';
+                errorEl.classList.add('show');
+            }
+        });
+
+        document.getElementById('logoutBtn')?.addEventListener('click', () => {
+            sessionStorage.removeItem(SESSION_KEY);
+            sessionStorage.removeItem(TOKEN_KEY);
+            window.location.reload();
+        });
+
+        async function carregarDados() {
+            document.getElementById('cadastroPage').style.display = 'none';
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('cadastroPanel').style.display = '';
+
+            const res = await fetch('/api/cadastros', { headers: getAuthHeaders() });
+            const data = await res.json();
+            const tbody = document.getElementById('cadastrosBody');
+
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:40px;">Nenhum cadastro encontrado.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = data.map(item => `
+                <tr>
+                    <td data-label="Nome">${item.Nome || '-'}</td>
+                    <td data-label="WhatsApp">${item.WhatsApp || '-'}</td>
+                    <td data-label="E-mail">${item['E-mail'] || '-'}</td>
+                    <td data-label="Data">${item['Data do Cadastro'] || '-'}</td>
+                </tr>
+            `).join('');
+        }
+
+        function exportarExcel() {
+            window.location.href = '/api/cadastros/export';
+        }
+
+        if (isAuth()) {
+            carregarDados();
+        }
+    </script>
+</body>
+</html>

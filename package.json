@@ -2,8 +2,17 @@
     "name": "cardapio-digital",
     "version": "1.0.0",
     "description": "Cardápio Digital com Node.js + SQLite",
+    "main": "backend/server.js",
     "scripts": {
         "start": "node backend/server.js",
-        "dev": "node --watch backend/server.js"
+        "dev": "node --watch backend/server.js",
+        "build": "npm install"
+    },
+    "dependencies": {
+        "bcryptjs": "^2.4.3",
+        "cors": "^2.8.5",
+        "express": "^4.19.2",
+        "sql.js": "^1.10.3",
+        "xlsx": "^0.18.5"
     }
 }
