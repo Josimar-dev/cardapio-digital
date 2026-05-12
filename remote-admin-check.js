@@ -55,7 +55,7 @@ const Admin = {
         });
 
         document.getElementById('shareWhatsAppBtn')?.addEventListener('click', () => {
-            window.open('https://cardapio.sbs/cardapio.html', '_blank');
+            window.open('https://cardapio.sbs/ver-cardapio.html', '_blank');
         });
 
         document.querySelectorAll('.admin-sidebar-nav a').forEach(link => {
